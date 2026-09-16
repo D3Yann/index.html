@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Active vs Passive Voice — Grammar Presentation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
+        :root {
+            --active: #00d4ff;
+            --active-glow: rgba(0,212,255,0.25);
+            --passive: #ff6b9d;
+            --passive-glow: rgba(255,107,157,0.25);
+            --bg: #0a0a12;
+            --card: #12121e;
+            --card-hover: #1a1a2e;
+            --border: #1e1e32;
+            --text: #e8e8f5;
+            --text-dim: #8888a8;
+            --success: #2ed573;
+            --danger: #ff4757;
+            --warning: #ffa502;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ===== NAVIGATION ===== */
+        .nav-dots {
+            position: fixed;
+            right: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 1000;
+        }
+        .nav-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        .nav-dot:hover { background: rgba(255,255,255,0.4); transform: scale(1.3); }
+        .nav-dot.active { background: var(--active); box-shadow: 0 0 12px var(--active-glow); border-color: rgba(0,212,255,0.3); }
+
+        /* ===== SECTIONS ===== */
+        .section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 24px;
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: clamp(32px, 6vw, 56px);
+            font-weight: 800;
+            text-align: center;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .section-desc {
+            font-size: 18px;
+            color: var(--text-dim);
+            text-align: center;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        /* ===== HERO ===== */
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(255,107,157,0.1));
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            animation: fadeInUp 0.8s ease;
+        }
+        .hero-title {
+            font-size: clamp(40px, 8vw, 72px);
+            font-weight: 800;
+            text-align: center;
+            line-height: 1.05;
+            animation: fadeInUp 0.8s ease 0.1s both;
+        }
+        .hero-title .active-word {
+            background: linear-gradient(135deg, var(--active), #7b2ff7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-title .passive-word {
+            background: linear-gradient(135deg, var(--passive), #ff4757);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-subtitle {
+            font-size: 20px;
+            color: var(--text-dim);
+            text-align: center;
+            margin-top: 20px;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+        .scroll-hint {
+            position: absolute;
+            bottom: 30px;
+            font-size: 13px;
+            color: var(--text-dim);
+            animation: bounce 2s infinite;
+            cursor: pointer;
+        }
+        @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+        /* ===== CARDS ===== */
+        .cards-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 40px;
+            width: 100%;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 28px;
+            flex: 1;
+            min-width: 280px;
+            max-width: 420px;
+            transition: all 0.3s;
+            animation: fadeInUp 0.6s ease both;
+        }
+        .card:hover { transform: translateY(-4px); border-color: #2a2a4e; }
+        .card.active-card { border-color: rgba(0,212,255,0.2); }
+        .card.passive-card { border-color: rgba(255,107,157,0.2); }
+        .card-icon {
+            width: 48px; height: 48px;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+        .active-card .card-icon { background: rgba(0,212,255,0.1); }
+        .passive-card .card-icon { background: rgba(255,107,157,0.1); }
+        .card h3 { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+        .card p { font-size: 15px; color: var(--text-dim); line-height: 1.6; }
+        .card-example {
+            margin-top: 16px;
+            padding: 14px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: 'Georgia', serif;
+            font-style: italic;
+        }
+        .card-example .highlight-active { color: var(--active); font-weight: 600; font-style: normal; }
+        .card-example .highlight-passive { color: var(--passive); font-weight: 600; font-style: normal; }
+
+        /* ===== FORMULA ===== */
+        .formula-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            margin-top: 30px;
+            width: 100%;
+            max-width: 700px;
+            animation: fadeInUp 0.6s ease both;
+        }
+        .formula-title { font-size: 14px; font-weight: 700; color: var(--text-dim); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 2px; }
+        .formula {
+            font-size: clamp(18px, 3vw, 26px);
+            font-weight: 700;
+            text-align: center;
+            padding: 20px;
+            border-radius: 14px;
+            margin-bottom: 12px;
+            font-family: 'Georgia', serif;
+        }
+        .formula-active { background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.15); color: var(--active); }
+        .formula-passive { background: rgba(255,107,157,0.08); border: 1px solid rgba(255,107,157,0.15); color: var(--passive); }
+        .formula-arrow { text-align: center; font-size: 24px; color: var(--text-dim); margin: 8px 0; }
+        .formula-note { font-size: 13px; color: var(--text-dim); text-align: center; margin-top: 8px; }
+
+        /* ===== COMPARISON TABLE ===== */
+        .compare-table {
+            width: 100%;
+            max-width: 700px;
+            margin-top: 30px;
+            border-collapse: collapse;
+            animation: fadeInUp 0.6s ease both;
+        }
+        .compare-table th {
+            padding: 16px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-dim);
+            border-bottom: 2px solid var(--border);
+        }
+        .compare-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 15px;
+        }
+        .compare-table .col-active { color: var(--active); font-weight: 600; }
+        .compare-table .col-passive { color: var(--passive); font-weight: 600; }
+
+        /* ===== USES GRID ===== */
+        .uses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            width: 100%;
+            max-width: 800px;
+            margin-top: 30px;
+        }
+        .use-item {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.2s;
+            animation: fadeInUp 0.5s ease both;
+        }
+        .use-item:hover { border-color: #2a2a4e; background: var(--card-hover); }
+        .use-number {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--active), var(--passive));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 800;
+            margin-bottom: 10px;
+        }
+        .use-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+        .use-item p { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+
+        /* ===== MISTAKES ===== */
+        .mistake-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 12px;
+            width: 100%;
+            max-width: 700px;
+            animation: fadeInUp 0.5s ease both;
+        }
+        .mistake-x {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: rgba(255,71,87,0.15);
+            color: var(--danger);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 16px;
+            flex-shrink: 0;
+        }
+        .mistake-content h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; color: var(--danger); }
+        .mistake-content p { font-size: 14px; color: var(--text-dim); }
+        .mistake-content .correct { color: var(--success); font-weight: 600; }
+
+        /* ===== QUIZ ===== */
+        .quiz-container {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 30px;
+        }
+        .quiz-question {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 16px;
+            animation: fadeInUp 0.5s ease both;
+        }
+        .quiz-question-text {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+        .quiz-option {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 15px;
+            text-align: left;
+            color: var(--text);
+        }
+        .quiz-option:hover { background: rgba(255,255,255,0.06); border-color: #3a3a5e; }
+        .quiz-option.correct { background: rgba(46,213,115,0.12); border-color: var(--success); color: var(--success); }
+        .quiz-option.wrong { background: rgba(255,71,87,0.12); border-color: var(--danger); color: var(--danger); }
+        .quiz-option.disabled { pointer-events: none; opacity: 0.7; }
+
+        .quiz-result {
+            text-align: center;
+            padding: 30px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            margin-top: 20px;
+            animation: fadeInUp 0.5s ease;
+        }
+        .quiz-score { font-size: 48px; font-weight: 800; background: linear-gradient(135deg, var(--active), var(--passive)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .quiz-message { font-size: 18px; color: var(--text-dim); margin-top: 10px; }
+        .btn-restart {
+            margin-top: 20px;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, var(--active), #7b2ff7);
+            border: none; border-radius: 24px;
+            color: #000; font-weight: 800; font-size: 15px;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .btn-restart:hover { transform: scale(1.05); }
+
+        /* ===== SOURCES ===== */
+        .sources-list {
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 14px;
+            line-height: 2;
+            margin-top: 20px;
+        }
+        .sources-list a { color: var(--active); text-decoration: none; }
+        .sources-list a:hover { text-decoration: underline; }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            .nav-dots { display: none; }
+            .cards-row { flex-direction: column; align-items: center; }
+            .card { min-width: 100%; max-width: 100%; }
+            .section { padding: 40px 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Dots -->
+    <nav class="nav-dots">
+        <div class="nav-dot active" onclick="scrollToSection(0)"></div>
+        <div class="nav-dot" onclick="scrollToSection(1)"></div>
+        <div class="nav-dot" onclick="scrollToSection(2)"></div>
+        <div class="nav-dot" onclick="scrollToSection(3)"></div>
+        <div class="nav-dot" onclick="scrollToSection(4)"></div>
+        <div class="nav-dot" onclick="scrollToSection(5)"></div>
+        <div class="nav-dot" onclick="scrollToSection(6)"></div>
+        <div class="nav-dot" onclick="scrollToSection(7)"></div>
+    </nav>
+
+    <!-- SECTION 1: HERO -->
+    <section class="section" id="sec-0">
+        <div class="hero-badge">🎓 Grammar Presentation — Class 10</div>
+        <h1 class="hero-title">
+            <span class="active-word">Active</span> vs<br>
+            <span class="passive-word">Passive</span> Voice
+        </h1>
+        <p class="hero-subtitle">When the subject performs the action vs. when the subject receives it</p>
+        <div class="scroll-hint" onclick="scrollToSection(1)">↓ Scroll to start</div>
+    </section>
+
+    <!-- SECTION 2: WHAT IS IT? -->
+    <section class="section" id="sec-1">
+        <div class="section-label">01 — What is it?</div>
+        <h2 class="section-title">Two Ways to Tell<br>the Same Story</h2>
+        <p class="section-desc">Every sentence has a subject and a verb. The voice tells us whether the subject is doing something or having something done to it.</p>
+
+        <div class="cards-row">
+            <div class="card active-card" style="animation-delay:0.1s">
+                <div class="card-icon">⚡</div>
+                <h3 style="color:var(--active)">Active Voice</h3>
+                <p>The subject <strong>performs</strong> the action. The focus is on who does something.</p>
+                <div class="card-example">
+                    "The cat <span class="highlight-active">chased</span> the mouse."
+                </div>
+            </div>
+            <div class="card passive-card" style="animation-delay:0.2s">
+                <div class="card-icon">🎯</div>
+                <h3 style="color:var(--passive)">Passive Voice</h3>
+                <p>The subject <strong>receives</strong> the action. The focus is on what happens.</p>
+                <div class="card-example">
+                    "The mouse <span class="highlight-passive">was chased</span> by the cat."
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: HOW IS IT FORMED? -->
+    <section class="section" id="sec-2">
+        <div class="section-label">02 — How is it formed?</div>
+        <h2 class="section-title">The Formula</h2>
+        <p class="section-desc">Transforming active to passive follows a simple pattern. Just remember: the object becomes the subject.</p>
+
+        <div class="formula-box">
+            <div class="formula-title">Active Voice Structure</div>
+            <div class="formula formula-active">
+                Subject + Verb + Object
+            </div>
+            <div class="formula-arrow">↓</div>
+            <div class="formula-title">Passive Voice Structure</div>
+            <div class="formula formula-passive">
+                Object + <span style="color:var(--passive)">be</span> + Past Participle + (by + Subject)
+            </div>
+            <div class="formula-note">The verb "be" changes according to tense • "by + subject" is optional</div>
+        </div>
+
+        <table class="compare-table" style="animation-delay:0.2s">
+            <tr>
+                <th>Tense</th>
+                <th class="col-active">Active</th>
+                <th class="col-passive">Passive</th>
+            </tr>
+            <tr>
+                <td>Simple Present</td>
+                <td class="col-active">She writes a letter.</td>
+                <td class="col-passive">A letter is written.</td>
+            </tr>
+            <tr>
+                <td>Simple Past</td>
+                <td class="col-active">She wrote a letter.</td>
+                <td class="col-passive">A letter was written.</td>
+            </tr>
+            <tr>
+                <td>Present Perfect</td>
+                <td class="col-active">She has written a letter.</td>
+                <td class="col-passive">A letter has been written.</td>
+            </tr>
+            <tr>
+                <td>Future</td>
+                <td class="col-active">She will write a letter.</td>
+                <td class="col-passive">A letter will be written.</td>
+            </tr>
+        </table>
+    </section>
+
+    <!-- SECTION 4: WHEN IS IT USED? -->
+    <section class="section" id="sec-3">
+        <div class="section-label">03 — When is it used?</div>
+        <h2 class="section-title">Why Choose<br>Passive?</h2>
+        <p class="section-desc">Passive is not "wrong" — it is a tool. Use it when the doer is unknown, unimportant, or when you want to emphasize the result.</p>
+
+        <div class="uses-grid">
+            <div class="use-item" style="animation-delay:0.05s">
+                <div class="use-number">1</div>
+                <h4>The doer is unknown</h4>
+                <p>"My bike <strong style="color:var(--passive)">was stolen</strong>." (I don't know who did it)</p>
+            </div>
+            <div class="use-item" style="animation-delay:0.1s">
+                <div class="use-number">2</div>
+                <h4>The doer is obvious</h4>
+                <p>"He <strong style="color:var(--passive)">was arrested</strong>." (Obviously by the police)</p>
+            </div>
+            <div class="use-item" style="animation-delay:0.15s">
+                <div class="use-number">3</div>
+                <h4>Focus on the action</h4>
+                <p>"The bridge <strong style="color:var(--passive)">was built</strong> in 1902." (The bridge matters, not the builder)</p>
+            </div>
+            <div class="use-item" style="animation-delay:0.2s">
+                <div class="use-number">4</div>
+                <h4>Scientific / formal writing</h4>
+                <p>"The experiment <strong style="color:var(--passive)">was conducted</strong> carefully."</p>
+            </div>
+            <div class="use-item" style="animation-delay:0.25s">
+                <div class="use-number">5</div>
+                <h4>To be diplomatic</h4>
+                <p>"Mistakes <strong style="color:var(--passive)">were made</strong>." (Avoids blaming someone directly)</p>
+            </div>
+            <div class="use-item" style="animation-delay:0.3s">
+                <div class="use-number">6</div>
+                <h4>News headlines</h4>
+                <p>"Man <strong style="color:var(--passive)">rescued</strong> from burning building."</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: EXAMPLES -->
+    <section class="section" id="sec-4">
+        <div class="section-label">04 — Examples</div>
+        <h2 class="section-title">Side by Side</h2>
+        <p class="section-desc">The same idea, two different voices. Notice how the focus shifts.</p>
+
+        <div class="cards-row" style="flex-direction:column;align-items:center">
+            <div class="card active-card" style="max-width:600px;width:100%;animation-delay:0.1s">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                    <span style="font-size:12px;font-weight:700;color:var(--active);text-transform:uppercase;letter-spacing:1px">Active</span>
+                    <span style="font-size:12px;color:var(--text-dim)">Focus: The doer</span>
+                </div>
+                <div style="font-size:18px;line-height:1.8">
+                    1. Thomas Edison <span class="highlight-active">invented</span> the light bulb.<br>
+                    2. The chef <span class="highlight-active">cooked</span> a delicious meal.<br>
+                    3. Someone <span class="highlight-active">stole</span> my phone yesterday.<br>
+                    4. The company <span class="highlight-active">will launch</span> a new product.
+                </div>
+            </div>
+            <div class="formula-arrow">⇅ Same meaning, different focus</div>
+            <div class="card passive-card" style="max-width:600px;width:100%;animation-delay:0.2s">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                    <span style="font-size:12px;font-weight:700;color:var(--passive);text-transform:uppercase;letter-spacing:1px">Passive</span>
+                    <span style="font-size:12px;color:var(--text-dim)">Focus: The result</span>
+                </div>
+                <div style="font-size:18px;line-height:1.8">
+                    1. The light bulb <span class="highlight-passive">was invented</span> by Thomas Edison.<br>
+                    2. A delicious meal <span class="highlight-passive">was cooked</span> by the chef.<br>
+                    3. My phone <span class="highlight-passive">was stolen</span> yesterday.<br>
+                    4. A new product <span class="highlight-passive">will be launched</span>.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 6: COMMON MISTAKES -->
+    <section class="section" id="sec-5">
+        <div class="section-label">05 — Common Mistakes</div>
+        <h2 class="section-title">Don't Fall<br>Into These Traps</h2>
+        <p class="section-desc">These are the most frequent errors students make when using the passive voice.</p>
+
+        <div class="mistake-row" style="animation-delay:0.1s">
+            <div class="mistake-x">✕</div>
+            <div class="mistake-content">
+                <h4>Using the wrong past participle</h4>
+                <p>❌ "The cake was <strong>eat</strong> by the dog."<br>
+                <span class="correct">✓ "The cake was <strong>eaten</strong> by the dog."</span></p>
+            </div>
+        </div>
+
+        <div class="mistake-row" style="animation-delay:0.2s">
+            <div class="mistake-x">✕</div>
+            <div class="mistake-content">
+                <h4>Forgetting "be" before the participle</h4>
+                <p>❌ "The letter <strong>written</strong> yesterday."<br>
+                <span class="correct">✓ "The letter <strong>was written</strong> yesterday."</span></p>
+            </div>
+        </div>
+
+        <div class="mistake-row" style="animation-delay:0.3s">
+            <div class="mistake-x">✕</div>
+            <div class="mistake-content">
+                <h4>Using passive with intransitive verbs</h4>
+                <p>❌ "He <strong>was arrived</strong> late." (arrive has no object)<br>
+                <span class="correct">✓ "He <strong>arrived</strong> late."</span></p>
+            </div>
+        </div>
+
+        <div class="mistake-row" style="animation-delay:0.4s">
+            <div class="mistake-x">✕</div>
+            <div class="mistake-content">
+                <h4>Wrong agent preposition</h4>
+                <p>❌ "The book was written <strong>from</strong> Shakespeare."<br>
+                <span class="correct">✓ "The book was written <strong>by</strong> Shakespeare."</span></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 7: INTERACTIVE EXERCISE -->
+    <section class="section" id="sec-6">
+        <div class="section-label">06 — Interactive Exercise</div>
+        <h2 class="section-title">Test Your<br>Knowledge</h2>
+        <p class="section-desc">Choose the correct answer. You will get your score at the end!</p>
+
+        <div class="quiz-container" id="quiz-container"></div>
+        <div id="quiz-result" class="hidden"></div>
+    </section>
+
+    <!-- SECTION 8: SOURCES -->
+    <section class="section" id="sec-7">
+        <div class="section-label">07 — Sources</div>
+        <h2 class="section-title">References</h2>
+        <div class="sources-list">
+            <p>📚 English Grammar in Use — Raymond Murphy (Cambridge)</p>
+            <p>📚 Practical English Usage — Michael Swan (Oxford)</p>
+            <p>🌐 <a href="https://www.bbc.co.uk/learningenglish" target="_blank">BBC Learning English</a></p>
+            <p>🌐 <a href="https://www.englishclub.com/grammar/passive-voice.htm" target="_blank">English Club — Passive Voice</a></p>
+            <p>🌐 <a href="https://www.perfect-english-grammar.com/passive-voice.html" target="_blank">Perfect English Grammar</a></p>
+        </div>
+        <p style="margin-top:40px;color:var(--text-dim);font-size:13px">Created for Class 10 Grammar Presentation • Interactive Web Version</p>
+    </section>
+
+    <script>
+        // ===== SCROLL NAVIGATION =====
+        const sections = document.querySelectorAll('.section');
+        const dots = document.querySelectorAll('.nav-dot');
+
+        function scrollToSection(index) {
+            sections[index].scrollIntoView({ behavior: 'smooth' });
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const idx = Array.from(sections).indexOf(entry.target);
+                    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+                }
+            });
+        }, { threshold: 0.5 });
+
+        sections.forEach(s => observer.observe(s));
+
+        // ===== QUIZ =====
+        const quizData = [
+            {
+                question: "1. Change to passive: 'The teacher explained the lesson.'",
+                options: [
+                    "The lesson was explained by the teacher.",
+                    "The lesson explained by the teacher.",
+                    "The lesson is explained the teacher.",
+                    "The lesson was explain by the teacher."
+                ],
+                correct: 0
+            },
+            {
+                question: "2. Which sentence is in the passive voice?",
+                options: [
+                    "She wrote a beautiful poem.",
+                    "The poem was written by her.",
+                    "She is writing a poem now.",
+                    "She will write a poem tomorrow."
+                ],
+                correct: 1
+            },
+            {
+                question: "3. Choose the correct passive form: 'Someone has stolen my wallet.'",
+                options: [
+                    "My wallet has stole.",
+                    "My wallet was stolen.",
+                    "My wallet has been stolen.",
+                    "My wallet is been stolen."
+                ],
+                correct: 2
+            },
+            {
+                question: "4. Why do we use passive in: 'The window was broken.'?",
+                options: [
+                    "To emphasize who broke it",
+                    "Because we don't know or care who broke it",
+                    "To make the sentence longer",
+                    "Because it's past tense"
+                ],
+                correct: 1
+            },
+            {
+                question: "5. Find the mistake: 'The cake was bake in the oven.'",
+                options: [
+                    "was → is",
+                    "bake → baked",
+                    "in → by",
+                    "The → A"
+                ],
+                correct: 1
+            }
+        ];
+
+        let currentQ = 0;
+        let score = 0;
+        let answered = false;
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            const result = document.getElementById('quiz-result');
+            result.classList.add('hidden');
+            container.innerHTML = '';
+
+            if (currentQ >= quizData.length) {
+                showResult();
+                return;
+            }
+
+            const q = quizData[currentQ];
+            const qDiv = document.createElement('div');
+            qDiv.className = 'quiz-question';
+            qDiv.innerHTML = '<div class="quiz-question-text">' + q.question + '</div><div class="quiz-options"></div>';
+
+            const optsDiv = qDiv.querySelector('.quiz-options');
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-option';
+                btn.textContent = opt;
+                btn.onclick = () => checkAnswer(i, btn, optsDiv, q.correct);
+                optsDiv.appendChild(btn);
+            });
+
+            container.appendChild(qDiv);
+            answered = false;
+        }
+
+        function checkAnswer(selected, btn, container, correct) {
+            if (answered) return;
+            answered = true;
+
+            const allBtns = container.querySelectorAll('.quiz-option');
+            allBtns.forEach(b => b.classList.add('disabled'));
+
+            if (selected === correct) {
+                btn.classList.add('correct');
+                score++;
+            } else {
+                btn.classList.add('wrong');
+                allBtns[correct].classList.add('correct');
+            }
+
+            setTimeout(() => {
+                currentQ++;
+                renderQuiz();
+            }, 1200);
+        }
+
+        function showResult() {
+            const container = document.getElementById('quiz-container');
+            const result = document.getElementById('quiz-result');
+            container.innerHTML = '';
+            result.classList.remove('hidden');
+
+            const pct = Math.round((score / quizData.length) * 100);
+            let msg = '';
+            if (pct === 100) msg = "Perfect! You're a grammar master! 🏆";
+            else if (pct >= 80) msg = "Great job! Almost perfect! 🌟";
+            else if (pct >= 60) msg = "Good! Keep practicing! 📚";
+            else msg = "Review the rules and try again! 💪";
+
+            result.innerHTML = '<div class="quiz-score">' + score + '/' + quizData.length + '</div>' +
+                '<div class="quiz-message">' + msg + '</div>' +
+                '<button class="btn-restart" onclick="restartQuiz()">Try Again</button>';
+        }
+
+        function restartQuiz() {
+            currentQ = 0;
+            score = 0;
+            renderQuiz();
+        }
+
+        renderQuiz();
+    </script>
+</body>
+</html>
